@@ -1,0 +1,22 @@
+/* Header, brand and shared building blocks — same look as the education site (kayra_web home-page.css). */
+.shell { width: min(var(--k-shell), calc(100% - 2 * var(--k-gutter))); margin-inline: auto; }
+.kicker { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--k-subtle); font: 11px/1.7 var(--k-font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.kicker > span { width: 22px; height: 1px; background: var(--k-accent-soft); flex-shrink: 0; }
+.button { display: inline-flex; align-items: center; gap: 18px; min-height: 48px; padding: 13px 22px; border-radius: 2px; background: var(--k-action); color: #fff; font-size: 13px; transition: background .2s, gap .25s var(--k-ease); }
+.button:hover { background: var(--k-action-hover); gap: 24px; }
+
+.site-header { position: sticky; top: 0; z-index: 20; background: rgb(255 255 255 / .88); backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--k-rule); }
+.site-header-inner { height: var(--k-header-h); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.site-brand { display: inline-flex; padding: 6px 0; }
+
+.kayra-identity { display: inline-flex; align-items: center; gap: 12px; color: var(--k-ink); }
+.kayra-identity img { display: block; width: 31px; height: 37px; }
+.kayra-wordmark { font: 600 15px var(--k-font-heading); letter-spacing: .18em; line-height: 1.1; }
+.kayra-wordmark > span { display: block; font: 9px var(--k-font-mono); letter-spacing: .15em; margin-top: 6px; color: #65766d; }
+
+@media (max-width: 700px) {
+  .kayra-identity { gap: 9px; }
+  .kayra-identity img { width: 25px; height: 30px; }
+  .kayra-wordmark { font-size: 13px; }
+  .kayra-wordmark > span { font-size: 8px; }
+}

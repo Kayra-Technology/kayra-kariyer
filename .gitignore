@@ -1,0 +1,13 @@
+# Dependencies and build output
+node_modules/
+dist/
+
+# Test artefacts
+test-results/
+playwright-report/
+blob-report/
+
+# Local noise
+*.log
+.DS_Store
+.env*
