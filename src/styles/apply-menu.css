@@ -1,0 +1,17 @@
+/* Application menu: button + small panel (webmail, mail app, copy address). */
+.apply-menu { position: relative; display: inline-block; }
+.apply-menu-chevron { transition: transform .2s var(--k-ease); }
+.apply-menu .button[aria-expanded="true"] .apply-menu-chevron { transform: rotate(180deg); }
+.apply-menu-panel { position: absolute; top: calc(100% + 8px); left: 0; z-index: 30; width: min(290px, calc(100vw - 2 * var(--k-gutter))); padding: 8px; background: var(--k-surface); border: 1px solid var(--k-rule); border-radius: 2px; box-shadow: 0 14px 40px rgb(41 67 57 / .12); text-align: left; }
+.apply-menu-panel[hidden] { display: none; }
+.apply-menu.is-end .apply-menu-panel { left: auto; right: 0; }
+.apply-menu-address { margin: 0; padding: 10px 12px 8px; color: var(--k-subtle); font: 12px var(--k-font-mono); letter-spacing: .02em; user-select: all; }
+.apply-menu-panel ul { margin: 0; padding: 0; list-style: none; }
+.apply-menu-panel :is(a, button) { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 10px 12px; border: 0; background: none; color: var(--k-ink); font-size: 14px; text-align: left; cursor: pointer; }
+.apply-menu-panel :is(a, button):hover { background: var(--k-surface-soft); }
+.apply-menu-panel :is(a, button) svg { flex-shrink: 0; color: var(--k-accent); }
+.apply-menu-status { margin: 0; padding: 0 12px; color: var(--k-accent-text); font-size: 13px; }
+.apply-menu-status:not(:empty) { padding: 6px 12px 8px; }
+/* Last block of the page: open upwards so the panel stays on screen. */
+.career-apply .apply-menu-panel { top: auto; bottom: calc(100% + 8px); }
+@media (max-width: 900px) { .career-apply .apply-menu.is-end .apply-menu-panel { left: 0; right: auto; } }

@@ -8,8 +8,7 @@ test("shows the rocket posting and applies by e-mail", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Roket Sistemleri Eğitmeni");
   await expect(page.locator(".career-skill")).toHaveCount(4);
   await expect(page.locator(".career-meta div")).toHaveCount(4);
-  const apply = page.locator(".career-apply").getByRole("link", { name: /info@kayra\.technology/ });
-  await expect(apply).toHaveAttribute("href", "mailto:info@kayra.technology?subject=Ba%C5%9Fvuru%3A%20Roket%20Sistemleri%20E%C4%9Fitmeni");
+  await expect(page.locator(".career-apply").getByRole("button", { name: "info@kayra.technology" })).toBeVisible();
   expect(await noHorizontalOverflow(page)).toBe(true);
 });
 
@@ -37,4 +36,56 @@ test("brand, fonts and emblem load from this deployment only", async ({ page, ba
   expect(families).toEqual(expect.arrayContaining(["Kayra Sans", "Kayra Mono"]));
   expect(external).toEqual([]);
   expect(failed).toEqual([]);
+});
+
+const subject = "Başvuru: Roket Sistemleri Eğitmeni";
+
+test("apply menu offers Gmail, Outlook, the mail app and copying the address", async ({ page }) => {
+  await page.goto("./");
+  const hero = page.locator(".career-hero");
+  const toggle = hero.getByRole("button", { name: "Başvur" });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+
+  const gmail = new URL(await hero.getByRole("link", { name: "Gmail ile yaz" }).getAttribute("href"));
+  expect(gmail.searchParams.get("to")).toBe("info@kayra.technology");
+  expect(gmail.searchParams.get("su")).toBe(subject);
+  await expect(hero.getByRole("link", { name: "Gmail ile yaz" })).toHaveAttribute("target", "_blank");
+  const outlook = new URL(await hero.getByRole("link", { name: "Outlook ile yaz" }).getAttribute("href"));
+  expect(outlook.searchParams.get("subject")).toBe(subject);
+  await expect(hero.getByRole("link", { name: "Mail uygulamasıyla aç" }))
+    .toHaveAttribute("href", "mailto:info@kayra.technology?subject=Ba%C5%9Fvuru%3A%20Roket%20Sistemleri%20E%C4%9Fitmeni");
+  expect(await noHorizontalOverflow(page)).toBe(true);
+
+  await page.keyboard.press("Escape");
+  await expect(hero.getByRole("link", { name: "Gmail ile yaz" })).toBeHidden();
+  await expect(toggle).toBeFocused();
+
+  await toggle.click();
+  await page.locator(".career-summary").click();
+  await expect(hero.getByRole("link", { name: "Gmail ile yaz" })).toBeHidden();
+});
+
+test("copying the address puts it on the clipboard and says so", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("./");
+  const section = page.locator(".career-apply");
+  await section.getByRole("button", { name: "info@kayra.technology" }).click();
+  await section.getByRole("button", { name: "Adresi kopyala" }).click();
+  await expect(section.getByRole("status")).toHaveText("Adres kopyalandı.");
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("info@kayra.technology");
+  const box = await section.locator(".apply-menu-panel").boundingBox();
+  const width = await page.evaluate(() => window.innerWidth);
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(width);
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y + box.height).toBeLessThanOrEqual(await page.evaluate(() => window.innerHeight));
+});
+
+test("phones keep the header to brand and tabs; the hero holds the apply button", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "header button is shown on wide screens");
+  await page.goto("./");
+  await expect(page.locator(".site-header .apply-menu")).toBeHidden();
+  await expect(page.locator(".career-hero").getByRole("button", { name: "Başvur" })).toBeVisible();
 });

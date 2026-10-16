@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { Mail } from "lucide-react";
 import { asset } from "./asset";
 import { jobs } from "./jobs";
 import { sections } from "./sections";
-import { applyHref, bullet, pad } from "./posting";
+import { ApplyMenu } from "./ApplyMenu";
+import { bullet, pad } from "./posting";
 
 const location = "İTÜ Özdemir Bayraktar Tasarım ve Prototipleme Merkezi";
 
@@ -36,7 +36,7 @@ export function CareerPage() {
             </span>
           </a>
           <SectionTabs />
-          <a className="button career-header-cta" href={applyHref(job.apply)}>Başvur <Mail size={15} /></a>
+          <ApplyMenu apply={job.apply} label="Başvur" align="end" className="career-header-cta" />
         </div>
       </header>
 
@@ -48,7 +48,7 @@ export function CareerPage() {
           <dl className="career-meta">
             {job.meta.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
           </dl>
-          <a className="button" href={applyHref(job.apply)}>Başvur <Mail size={15} /></a>
+          <ApplyMenu apply={job.apply} label="Başvur" />
         </section>
 
         <section className="career-section" aria-labelledby="requirements-title">
@@ -92,7 +92,7 @@ export function CareerPage() {
             <p>{job.apply.text}</p>
           </div>
           <div className="career-apply-actions">
-            <a className="button" href={applyHref(job.apply)}>{job.apply.email} <Mail size={15} /></a>
+            <ApplyMenu apply={job.apply} label={job.apply.email} align="end" />
             <span>{location}</span>
           </div>
         </section>

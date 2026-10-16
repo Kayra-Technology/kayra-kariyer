@@ -2,7 +2,7 @@
 .shell { width: min(var(--k-shell), calc(100% - 2 * var(--k-gutter))); margin-inline: auto; }
 .kicker { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--k-subtle); font: 11px/1.7 var(--k-font-mono); letter-spacing: .12em; text-transform: uppercase; }
 .kicker > span { width: 22px; height: 1px; background: var(--k-accent-soft); flex-shrink: 0; }
-.button { display: inline-flex; align-items: center; gap: 18px; min-height: 48px; padding: 13px 22px; border-radius: 2px; background: var(--k-action); color: #fff; font-size: 13px; transition: background .2s, gap .25s var(--k-ease); }
+.button { display: inline-flex; align-items: center; gap: 18px; min-height: 48px; padding: 13px 22px; border: 0; border-radius: 2px; cursor: pointer; background: var(--k-action); color: #fff; font-size: 13px; transition: background .2s, gap .25s var(--k-ease); }
 .button:hover { background: var(--k-action-hover); gap: 24px; }
 
 .site-header { position: sticky; top: 0; z-index: 20; background: rgb(255 255 255 / .88); backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--k-rule); }

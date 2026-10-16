@@ -6,6 +6,7 @@ import "./styles/base.css";
 import "./styles/header.css";
 import "./styles/section-tabs.css";
 import "./styles/career-page.css";
+import "./styles/apply-menu.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
