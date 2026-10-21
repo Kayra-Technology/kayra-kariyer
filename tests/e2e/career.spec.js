@@ -2,13 +2,34 @@ import { expect, test } from "@playwright/test";
 
 const noHorizontalOverflow = (page) => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
 
-test("shows the rocket posting and applies by e-mail", async ({ page }) => {
+const titles = ["Roket Sistemleri Eğitmeni", "İnsansız Su Altı Sistemleri Eğitmeni", "Elektronik ve PCB Atölyeleri Eğitmeni"];
+
+test("shows all three open positions, each with its own apply button", async ({ page }) => {
   await page.goto("./");
-  await expect(page).toHaveTitle("Kariyer · Roket Sistemleri Eğitmeni · Kayra");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Roket Sistemleri Eğitmeni");
-  await expect(page.locator(".career-skill")).toHaveCount(4);
-  await expect(page.locator(".career-meta div")).toHaveCount(4);
+  await expect(page).toHaveTitle("Kariyer · Açık pozisyonlar · Kayra");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Açık pozisyonlar");
+  const postings = page.locator(".career-job");
+  await expect(postings.getByRole("heading", { level: 2 })).toHaveText(titles);
+  for (const posting of await postings.all()) {
+    await expect(posting.getByRole("button", { name: "Başvur" })).toBeVisible();
+    await expect(posting.locator(".career-summary")).toBeVisible();
+  }
   await expect(page.locator(".career-apply").getByRole("button", { name: "info@kayra.technology" })).toBeVisible();
+  expect(await noHorizontalOverflow(page)).toBe(true);
+});
+
+test("the full posting opens under each position", async ({ page }) => {
+  await page.goto("./");
+  const pcb = page.locator(".career-job").nth(2);
+  await expect(pcb.getByRole("heading", { name: "Aranan nitelikler" })).toBeHidden();
+  await pcb.getByText("İlanın tamamı").click();
+  await expect(pcb.getByRole("heading", { name: "Aranan nitelikler" })).toBeVisible();
+  await expect(pcb.locator(".career-skill")).toHaveCount(5);
+  await expect(pcb.getByText("E-posta konusu: Elektronik ve PCB Atölyeleri Eğitmeni Başvurusu")).toBeVisible();
+  const rov = page.locator(".career-job").nth(1);
+  await rov.getByText("İlanın tamamı").click();
+  await expect(rov.locator(".career-skill")).toHaveCount(0);
+  await expect(rov.getByText("MAVLink haberleşme protokolü hakkında bilgi sahibi olmak")).toBeVisible();
   expect(await noHorizontalOverflow(page)).toBe(true);
 });
 
@@ -38,11 +59,24 @@ test("brand, fonts and emblem load from this deployment only", async ({ page, ba
   expect(failed).toEqual([]);
 });
 
+test("each apply button fills in its own posting's subject", async ({ page }) => {
+  await page.goto("./");
+  const subjects = ["Başvuru: Roket Sistemleri Eğitmeni", "Başvuru: İnsansız Su Altı Sistemleri Eğitmeni", "Elektronik ve PCB Atölyeleri Eğitmeni Başvurusu"];
+  for (const [index, expected] of subjects.entries()) {
+    const posting = page.locator(".career-job").nth(index);
+    await posting.getByRole("button", { name: "Başvur" }).click();
+    const gmail = new URL(await posting.getByRole("link", { name: "Gmail ile yaz" }).getAttribute("href"));
+    expect(gmail.searchParams.get("to")).toBe("info@kayra.technology");
+    expect(gmail.searchParams.get("su")).toBe(expected);
+    await page.keyboard.press("Escape");
+  }
+});
+
 const subject = "Başvuru: Roket Sistemleri Eğitmeni";
 
 test("apply menu offers Gmail, Outlook, the mail app and copying the address", async ({ page }) => {
   await page.goto("./");
-  const hero = page.locator(".career-hero");
+  const hero = page.locator(".career-job").first();
   const toggle = hero.getByRole("button", { name: "Başvur" });
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   await toggle.click();
@@ -63,7 +97,7 @@ test("apply menu offers Gmail, Outlook, the mail app and copying the address", a
   await expect(toggle).toBeFocused();
 
   await toggle.click();
-  await page.locator(".career-summary").click();
+  await hero.locator(".career-summary").click();
   await expect(hero.getByRole("link", { name: "Gmail ile yaz" })).toBeHidden();
 });
 
@@ -83,9 +117,8 @@ test("copying the address puts it on the clipboard and says so", async ({ page, 
   expect(box.y + box.height).toBeLessThanOrEqual(await page.evaluate(() => window.innerHeight));
 });
 
-test("phones keep the header to brand and tabs; the hero holds the apply button", async ({ page, isMobile }) => {
-  test.skip(!isMobile, "header button is shown on wide screens");
+test("the header holds brand and tabs only; apply buttons sit with the postings", async ({ page }) => {
   await page.goto("./");
-  await expect(page.locator(".site-header .apply-menu")).toBeHidden();
-  await expect(page.locator(".career-hero").getByRole("button", { name: "Başvur" })).toBeVisible();
+  await expect(page.locator(".site-header .apply-menu")).toHaveCount(0);
+  await expect(page.locator(".career-job").first().getByRole("button", { name: "Başvur" })).toBeVisible();
 });

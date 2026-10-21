@@ -37,14 +37,20 @@ describe("posting helpers", () => {
 });
 
 describe("content", () => {
-  it("has the rocket instructor posting with complete fields", () => {
-    expect(jobs).toHaveLength(1);
-    const [job] = jobs;
-    expect(job.title).toBe("Roket Sistemleri Eğitmeni");
-    expect(job.meta).toHaveLength(4);
-    expect(job.skills).toHaveLength(4);
-    for (const [, items] of job.skills) expect(items.length).toBeGreaterThan(0);
-    expect(job.apply.email).toMatch(/@kayra\.technology$/);
+  it("has the three instructor postings with complete fields", () => {
+    expect(jobs.map((job) => job.title)).toEqual([
+      "Roket Sistemleri Eğitmeni", "İnsansız Su Altı Sistemleri Eğitmeni", "Elektronik ve PCB Atölyeleri Eğitmeni",
+    ]);
+    expect(new Set(jobs.map((job) => job.id)).size).toBe(3);
+    for (const job of jobs) {
+      expect(job.summary.length).toBeGreaterThan(0);
+      expect(job.meta.length).toBeGreaterThan(0);
+      for (const list of [job.requirements, job.preferred, job.offers]) expect(list.length).toBeGreaterThan(0);
+      for (const [, items] of job.skills) expect(items.length).toBeGreaterThan(0);
+      expect(job.apply.email).toBe("info@kayra.technology");
+      expect(job.apply.subject).toContain(job.title);
+    }
+    expect(jobs.map((job) => job.skills.length)).toEqual([4, 1, 5]);
   });
 
   it("links the same three sections as the corporate and education sites", () => {

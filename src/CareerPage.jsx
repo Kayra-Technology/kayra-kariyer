@@ -17,13 +17,75 @@ function SectionTabs() {
   );
 }
 
-/** kayra.technology/kariyer: open position with the full posting and an e-mail application. */
+const List = ({ items }) => <ul className="career-list">{items.map((item) => <li key={item}>{bullet(item)}</li>)}</ul>;
+
+/** Technical skills: titled groups as cards, or one untitled list when the posting has no groups. */
+function Skills({ skills }) {
+  if (skills.length === 1 && !skills[0][0]) return <List items={skills[0][1]} />;
+  return (
+    <div className="career-skill-grid">
+      {skills.map(([group, items], index) => (
+        <article key={group} className="career-skill">
+          <span className="career-skill-index">{pad(index + 1)}</span>
+          <h4>{group}</h4>
+          <List items={items} />
+        </article>
+      ))}
+    </div>
+  );
+}
+
+/** One open position: summary and apply button always visible, the full posting behind "İlanın tamamı". */
+function Posting({ job, index }) {
+  const titleId = `${job.id}-title`;
+  return (
+    <article className="career-job" aria-labelledby={titleId}>
+      <p className="kicker"><span /> {pad(index + 1)} / AÇIK POZİSYON</p>
+      <h2 id={titleId}>{job.title}</h2>
+      <p className="career-summary">{job.summary}</p>
+      <dl className="career-meta">
+        {job.meta.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+      </dl>
+      <ApplyMenu apply={job.apply} label="Başvur" />
+
+      <details className="career-details">
+        <summary>İlanın tamamı</summary>
+        <section className="career-section">
+          <h3>Aranan nitelikler</h3>
+          <List items={job.requirements} />
+        </section>
+        <section className="career-section">
+          <h3>Teknik yetkinlikler</h3>
+          {job.skillsIntro && <p className="career-note">{job.skillsIntro}</p>}
+          <Skills skills={job.skills} />
+        </section>
+        <div className="career-section career-two">
+          <section>
+            <h3>Tercih sebepleri</h3>
+            <List items={job.preferred} />
+          </section>
+          <section>
+            <h3>Kayra'da seni neler bekliyor?</h3>
+            <List items={job.offers} />
+          </section>
+        </div>
+        <section className="career-section career-job-apply">
+          <h3>Başvuru</h3>
+          <p>{job.apply.text}</p>
+          <p className="career-job-subject">E-posta konusu: {job.apply.subject}</p>
+        </section>
+      </details>
+    </article>
+  );
+}
+
+/** kayra.technology/kariyer: every open position on one page, each with its own e-mail application. */
 export function CareerPage() {
-  const [job] = jobs;
+  const { email } = jobs[0].apply;
 
   useEffect(() => {
-    document.title = `Kariyer · ${job.title} · Kayra`;
-  }, [job.title]);
+    document.title = "Kariyer · Açık pozisyonlar · Kayra";
+  }, []);
 
   return (
     <div className="career-page">
@@ -36,63 +98,28 @@ export function CareerPage() {
             </span>
           </a>
           <SectionTabs />
-          <ApplyMenu apply={job.apply} label="Başvur" align="end" className="career-header-cta" />
         </div>
       </header>
 
       <main className="shell">
-        <section className="career-hero" aria-labelledby="job-title">
-          <p className="kicker"><span /> KARİYER · AÇIK POZİSYON</p>
-          <h1 id="job-title">{job.title}</h1>
-          <p className="career-summary">{job.summary}</p>
-          <dl className="career-meta">
-            {job.meta.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
-          </dl>
-          <ApplyMenu apply={job.apply} label="Başvur" />
+        <section className="career-hero" aria-labelledby="careers-title">
+          <p className="kicker"><span /> KARİYER</p>
+          <h1 id="careers-title">Açık pozisyonlar</h1>
+          <ul className="career-index">
+            {jobs.map((job) => <li key={job.id}>{job.title}</li>)}
+          </ul>
         </section>
 
-        <section className="career-section" aria-labelledby="requirements-title">
-          <p className="kicker"><span /> 01 / ARANAN NİTELİKLER</p>
-          <h2 id="requirements-title">Aradığımız ekip arkadaşı</h2>
-          <ul className="career-list">{job.requirements.map((item) => <li key={item}>{bullet(item)}</li>)}</ul>
-        </section>
-
-        <section className="career-section" aria-labelledby="skills-title">
-          <p className="kicker"><span /> 02 / TEKNİK YETKİNLİKLER</p>
-          <h2 id="skills-title">Teknik yetkinlikler</h2>
-          <p className="career-note">{job.skillsIntro}</p>
-          <div className="career-skill-grid">
-            {job.skills.map(([group, items], index) => (
-              <article key={group} className="career-skill">
-                <span className="career-skill-index">{pad(index + 1)}</span>
-                <h3>{group}</h3>
-                <ul className="career-list">{items.map((item) => <li key={item}>{bullet(item)}</li>)}</ul>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="career-section career-two" aria-label="Tercih sebepleri ve sunduklarımız">
-          <div>
-            <p className="kicker"><span /> 03 / TERCİH SEBEPLERİ</p>
-            <h2>Tercih sebepleri</h2>
-            <ul className="career-list">{job.preferred.map((item) => <li key={item}>{bullet(item)}</li>)}</ul>
-          </div>
-          <div>
-            <p className="kicker"><span /> 04 / KAYRA'DA</p>
-            <h2>Kayra'da seni neler bekliyor?</h2>
-            <ul className="career-list">{job.offers.map((item) => <li key={item}>{bullet(item)}</li>)}</ul>
-          </div>
-        </section>
+        {jobs.map((job, index) => <Posting key={job.id} job={job} index={index} />)}
 
         <section className="career-apply" aria-labelledby="apply-title">
           <div>
             <p className="kicker"><span /> BAŞVURU</p>
             <h2 id="apply-title">Başvurunu bekliyoruz.</h2>
-            <p>{job.apply.text}</p>
+            <p>Başvurunu ilgili ilanın "Başvur" butonundan ya da doğrudan bu adrese gönderebilirsin.</p>
           </div>
           <div className="career-apply-actions">
-            <ApplyMenu apply={job.apply} label={job.apply.email} align="end" />
+            <ApplyMenu apply={{ email, subject: "Başvuru" }} label={email} align="end" />
             <span>{location}</span>
           </div>
         </section>

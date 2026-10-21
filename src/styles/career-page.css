@@ -1,15 +1,25 @@
 /* /kariyer — job posting in the education site's calm language (tokens.css). */
 .career-page { min-height: 100vh; background: var(--k-surface); color: var(--k-ink); font-family: var(--k-font-sans); }
-.career-header-cta .button { min-height: 40px; padding: 9px 18px; }
-.career-hero { max-width: 860px; padding: clamp(48px, 8vw, 96px) 0 clamp(40px, 6vw, 64px); border-bottom: 1px solid var(--k-rule); }
+.career-hero { padding: clamp(48px, 8vw, 96px) 0 clamp(36px, 5vw, 56px); border-bottom: 1px solid var(--k-rule); }
 .career-hero h1 { margin: 24px 0 22px; font-weight: 300; font-size: clamp(36px, 4.6vw, 60px); line-height: 1.08; letter-spacing: -.05em; }
 .career-summary { max-width: 42em; margin: 0 0 28px; color: var(--k-muted); font-size: 17px; line-height: 1.75; }
 .career-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 32px; }
 .career-meta div { padding: 10px 16px; border: 1px solid var(--k-rule); border-radius: 2px; background: var(--k-surface-soft); }
 .career-meta dt { color: var(--k-subtle); font: 10px var(--k-font-mono); letter-spacing: .1em; text-transform: uppercase; }
 .career-meta dd { margin: 4px 0 0; font-size: 15px; }
-.career-section { padding: clamp(44px, 6vw, 72px) 0; border-bottom: 1px solid var(--k-rule); }
-.career-section h2, .career-apply h2 { margin: 18px 0 22px; font-weight: 300; font-size: clamp(28px, 3vw, 40px); letter-spacing: -.04em; }
+.career-index { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; color: var(--k-muted); font-size: 16px; }
+.career-index li::before { content: "— "; color: var(--k-accent); }
+.career-job { max-width: 1000px; padding: clamp(44px, 6vw, 72px) 0; border-bottom: 1px solid var(--k-rule); }
+.career-job h2, .career-apply h2 { margin: 18px 0 22px; font-weight: 300; font-size: clamp(28px, 3.4vw, 44px); line-height: 1.1; letter-spacing: -.04em; }
+.career-details { margin-top: 28px; }
+.career-details summary { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--k-accent-text); font: 12px var(--k-font-mono); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; list-style: none; }
+.career-details summary::-webkit-details-marker { display: none; }
+.career-details summary::after { content: "+"; font-size: 16px; }
+.career-details[open] summary::after { content: "−"; }
+.career-section { padding: clamp(28px, 4vw, 44px) 0 0; }
+.career-section h3 { margin: 0 0 18px; font-weight: 500; font-size: 20px; letter-spacing: -.01em; }
+.career-job-apply p { max-width: 46em; margin: 0 0 10px; color: var(--k-muted); font-size: 15px; line-height: 1.75; }
+.career-job-apply .career-job-subject { color: var(--k-subtle); font: 12px var(--k-font-mono); }
 .career-note { max-width: 46em; margin: 0 0 28px; color: var(--k-muted); font-size: 15px; line-height: 1.75; }
 .career-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .career-list li { position: relative; padding-left: 22px; color: var(--k-ink-soft); font-size: 15px; line-height: 1.7; }
@@ -17,7 +27,7 @@
 .career-skill-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .career-skill { padding: 28px 30px 30px; border: 1px solid var(--k-rule); border-radius: 2px; }
 .career-skill-index { color: var(--k-accent-text); font: 12px var(--k-font-mono); }
-.career-skill h3 { margin: 10px 0 18px; font-weight: 500; font-size: 18px; letter-spacing: -.01em; }
+.career-skill h4 { margin: 10px 0 18px; font-weight: 500; font-size: 18px; letter-spacing: -.01em; }
 .career-skill .career-list li { font-size: 14px; }
 .career-two { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 72px); }
 .career-apply { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin: clamp(48px, 7vw, 88px) 0; padding: clamp(28px, 4vw, 48px); background: var(--k-surface-tint); border: 1px solid var(--k-rule-soft); border-radius: 2px; }
@@ -33,5 +43,4 @@
 }
 @media (max-width: 600px) {
   .career-skill { padding: 22px 20px; }
-  .apply-menu.career-header-cta { display: none; }
 }
